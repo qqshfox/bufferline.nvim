@@ -604,6 +604,7 @@ local function bufferline(preferences)
   letters.reset()
   state.buffers = {}
   local duplicates = {}
+  local longest_name
 
   for i, buf_id in ipairs(buf_nums) do
     local name = vim.fn.bufname(buf_id)
@@ -616,9 +617,16 @@ local function bufferline(preferences)
 
     mark_duplicates(duplicates, buf, state.buffers, preferences)
     buf.letter = letters.get(buf)
-
-    buf.component, buf.length = render_buffer(preferences, buf)
     state.buffers[i] = buf
+    if not longest_name or buf.filename:len() > longest_name then
+      longest_name = buf.filename:len()
+    end
+  end
+
+
+  for _,buf in ipairs(state.buffers) do
+    preferences.options.tab_size = longest_name
+    buf.component, buf.length = render_buffer(preferences, buf)
   end
 
   sorters.sort_buffers(preferences.options.sort_by, state.buffers)
