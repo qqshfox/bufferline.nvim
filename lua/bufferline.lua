@@ -69,6 +69,14 @@ function M.restore_positions()
   end
 end
 
+function M.clear_custom_sort()
+  state.custom_sort = nil
+  if vim.g[positions_key] then
+    vim.g[positions_key] = nil
+    refresh()
+  end
+end
+
 function M.pick_buffer()
   state.is_picking = true
   refresh()
@@ -803,6 +811,9 @@ function M.setup(prefs)
   vim.cmd('command BufferLineCyclePrev lua require"bufferline".cycle(-1)')
   vim.cmd('command BufferLineMovePrev lua require"bufferline".move(-1)')
   vim.cmd('command BufferLineMoveNext lua require"bufferline".move(1)')
+  vim.cmd(
+    'command BufferLineClearSort lua require"bufferline".clear_custom_sort()'
+  )
 
   -- TODO / idea: consider allowing these mappings to open buffers based on their
   -- visual position i.e. <leader>1 maps to the first visible buffer regardless
