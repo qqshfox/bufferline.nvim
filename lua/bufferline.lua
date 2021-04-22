@@ -804,6 +804,19 @@ function M.sort_buffers_by(sort_by)
   refresh()
 end
 
+function M.check_is_valid_buffer()
+  local cur_buf = api.nvim_get_current_buf()
+  local options = state.preferences.options
+  local filter = options.custom_filter
+  for _, buf in ipairs(state.buffers) do
+    print("buf: " .. vim.inspect(buf))
+    local buf_nums = get_buffers_by_mode(options.view)
+    if cur_buf == buf and not filter(buf, buf_nums) then
+      print("found Invalid buf")
+    end
+  end
+end
+
 local function setup_autocommands(preferences)
   local autocommands = {
     { "ColorScheme", "*", [[lua __setup_bufferline_colors()]] },
@@ -822,6 +835,9 @@ local function setup_autocommands(preferences)
       "*",
       "lua require'bufferline'.toggle_bufferline()",
     })
+  end
+  if preferences.intercept_bufenter then
+    table.insert({ "BufEnter", "*", "lua require'bufferline'.check_is_valid_buffer()" })
   end
   local loaded = pcall(require, "nvim-web-devicons")
   if loaded then
