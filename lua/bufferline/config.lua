@@ -70,6 +70,7 @@ function M.get_defaults()
       sort_by = "default",
       diagnostics = false,
       diagnostic_indicator = nil,
+      omit_filtered_buffers = false,
     },
     highlights = {
       fill = {

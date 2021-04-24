@@ -21,11 +21,11 @@ local join = utils.join
 -- string.len counts number of bytes and so the unicode icons are counted
 -- larger than their display width. So we use nvim's strwidth
 local strwidth = vim.fn.strwidth
+local fmt = string.format
 
 local padding = constants.padding
 local separator_styles = constants.separator_styles
 local positions_key = constants.positions_key
-
 
 local M = {}
 
@@ -804,16 +804,18 @@ function M.sort_buffers_by(sort_by)
   refresh()
 end
 
+---When moving between tabs and buffers, if a buffer has been filtered don't enter it
 function M.check_is_valid_buffer()
   local cur_buf = api.nvim_get_current_buf()
   local options = state.preferences.options
   local filter = options.custom_filter
-  for _, buf in ipairs(state.buffers) do
-    print("buf: " .. vim.inspect(buf))
-    local buf_nums = get_buffers_by_mode(options.view)
-    if cur_buf == buf and not filter(buf, buf_nums) then
-      print("found Invalid buf")
-    end
+  if not filter then
+    return
+  end
+  local buf_nums = get_buffers_by_mode(options.view)
+  local filtered = apply_buffer_filter(buf_nums, options.custom_filter)
+  if not vim.tbl_contains(filtered, cur_buf) then
+    vim.cmd(fmt("buffer %d", buf_nums[#buf_nums]))
   end
 end
 
@@ -836,9 +838,14 @@ local function setup_autocommands(preferences)
       "lua require'bufferline'.toggle_bufferline()",
     })
   end
-  if preferences.intercept_bufenter then
-    table.insert({ "BufEnter", "*", "lua require'bufferline'.check_is_valid_buffer()" })
+
+  if preferences.omit_filtered_buffers then
+    table.insert(
+      autocommands,
+      { "BufEnter,TabEnter", "*", "++nested", "lua require'bufferline'.check_is_valid_buffer()" }
+    )
   end
+
   local loaded = pcall(require, "nvim-web-devicons")
   if loaded then
     table.insert(autocommands, {
