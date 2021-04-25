@@ -80,7 +80,7 @@ function M.pick_buffer()
   local letter = vim.fn.nr2char(char)
   for _, buf in pairs(state.buffers) do
     if letter == buf.letter then
-      vim.cmd("buffer " .. buf.id)
+      vim.cmd(fmt("buffer %d", buf.id))
     end
   end
 
@@ -815,7 +815,7 @@ function M.check_is_valid_buffer()
   local buf_nums = get_buffers_by_mode(options.view)
   local filtered = apply_buffer_filter(buf_nums, options.custom_filter)
   if not vim.tbl_contains(filtered, cur_buf) then
-    vim.cmd(fmt("buffer %d", buf_nums[#buf_nums]))
+    vim.cmd(fmt("buffer %d", filtered[#filtered]))
   end
 end
 
