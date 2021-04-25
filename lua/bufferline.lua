@@ -630,6 +630,26 @@ local function get_updated_buffers(buf_nums, sorted)
   return updated
 end
 
+local function get_tab_group(buf_nums, tab_groups)
+  local current_tab = api.nvim_get_current_tab()
+  local tab_group = tab_groups[current_tab]
+  local grouper = tab_group[1]
+  local is_pattern = type(grouper) == 'string'
+  local filtered = {}
+  for _, buf in ipairs(buf_nums) do
+    if is_pattern then
+      local name = api.nvim_buf_get_name(buf)
+      if name:match(grouper) then
+        table.insert(filtered, buf)
+      end
+    else
+      if grouper(buf, buf_nums) then
+        table.insert(filtered, buf)
+      end
+    end
+  end
+end
+
 ---Filter the buffers to show based on the user callback passed in
 ---@param buf_nums integer[]
 ---@param callback fun(buf: integer, bufs: integer[]): boolean
@@ -652,6 +672,9 @@ end
 local function bufferline(preferences)
   local options = preferences.options
   local buf_nums = get_buffers_by_mode(options.view)
+  if options.tab_groups then
+    buf_nums = get_tab_group(buf_nums, options.tab_groups)
+  end
   if options.custom_filter then
     buf_nums = apply_buffer_filter(buf_nums, options.custom_filter)
   end

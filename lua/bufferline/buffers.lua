@@ -31,6 +31,7 @@ end
 ---@field public modified boolean
 ---@field public modifiable boolean
 ---@field public buftype string
+---@field public group string
 M.Buffer = {}
 
 ---create a new buffer class
@@ -54,7 +55,6 @@ function M.Buffer:new(buf)
       local devicons_loaded = fn.exists("*WebDevIconsGetFileTypeSymbol") > 0
       buf.icon = devicons_loaded and fn.WebDevIconsGetFileTypeSymbol(buf.path) or ""
     end
-    -- TODO: allow the format specifier to be configured
     buf.filename = (buf.path and #buf.path > 0) and fn.fnamemodify(buf.path, ":p:t")
       or "[No Name]"
   end
