@@ -73,7 +73,6 @@ end
 
 --- @param context table
 function M.make_clickable(context)
-  local mode = context.preferences.options.mode
   local component = context.component
   local buf_num = context.buffer.id
   if not vim.fn.has("tablineat") then
@@ -81,8 +80,7 @@ function M.make_clickable(context)
   end
   -- v:lua does not support function references in vimscript so
   -- the only way to implement this is using autoload viml functions
-  local fn = mode == "multiwindow" and "handle_win_click" or "handle_click"
-  return "%" .. buf_num .. "@nvim_bufferline#" .. fn .. "@" .. component
+  return "%" .. buf_num .. "@nvim_bufferline#" .. "handle_click" .. "@" .. component
 end
 
 -- The provided api nvim_is_buf_loaded filters out all hidden buffers

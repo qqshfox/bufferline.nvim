@@ -15,7 +15,6 @@ LSP Diagnostics........................: |bufferline-lua-diagnostics|
 Sorting................................: |bufferline-lua-sorting|
 Filtering..............................: |bufferline-lua-filtering|
 Pick...................................: |bufferline-lua-pick|
-Multi-window...........................: |bufferline-lua-multiwindow|
 Mappings...............................: |bufferline-lua-mapping|
 Highlights.............................: |bufferline-lua-highlights|
 Mouse actions..........................: |bufferline-lua-mouse-actions|
@@ -49,7 +48,6 @@ The available settings are: >
 
     require"bufferline".setup{
         options = {
-            view = "multiwindow" | "default",
             numbers = "none" | "ordinal" | "buffer_id" | "both",
             number_style = "superscript" | "" | { "none", "subscript" }, -- buffer_id at index 1, ordinal at index 2
             mappings = true | false,
@@ -254,14 +252,6 @@ to a key, e.g. >
 <
 then pick a buffer by typing the character for that specific buffer that
 appears
-
-==============================================================================
-MULTIWINDOW MODE                                    *bufferline-lua-multiwindow*
-
-When this mode is active, for layouts of multiple windows in the tabpage, only
-the buffers that are displayed in those windows are listed in the tabline.
-That only applies to multi-window layouts, if there is only one window in the
-tabpage, all buffers are listed.
 
 ==============================================================================
 MOUSE ACTIONS                                     *bufferline-lua-mouse-actions*
