@@ -313,7 +313,7 @@ function M.cycle(direction)
     return utils.echoerr("This buffer does not exist")
   end
 
-  vim.cmd("buffer " .. next.id)
+  vim.cmd("buffer! " .. next.id)
 end
 
 ---@alias direction "'left'" | "'right'"
